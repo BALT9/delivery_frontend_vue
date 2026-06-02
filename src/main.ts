@@ -19,7 +19,7 @@ app.use(pinia)
 
 // inicializar auth DESPUÉS de usar pinia
 const auth = useAuthStore(pinia)
-auth.init()
+// auth.init()
 
 // 2. Router
 app.use(router)

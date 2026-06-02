@@ -24,7 +24,7 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem("access_token");
-            router.push('/login')
+            // router.push('/login')
         }
 
         return Promise.reject(error);

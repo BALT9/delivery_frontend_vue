@@ -7,6 +7,7 @@ import Register from '../views/auth/Register.vue'
 import AdminLayout from '../layout/AdminLayout.vue'
 import AdminHome from '../views/admin/Dashboard/AdminHome/AdminHome.vue'
 import User from '../views/admin/Dashboard/Users/User.vue'
+import { useAuthStore } from '../stores/auth.ts'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -19,7 +20,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/login',
         name: 'login',
         component: Login,
-        // meta: { redirectIfAuth: true }
     },
 
     {
@@ -74,33 +74,33 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-    const token = localStorage.getItem('access_token')
+    const auth = useAuthStore()
 
-    let user = null
-    try {
-        user = JSON.parse(localStorage.getItem('user') || 'null')
-    } catch {
-        user = null
+    const isAuth = auth.token !== null && auth.token !== '' && auth.token !== 'null'
+
+    console.log({
+        to: to.name,
+        path: to.path,
+        token: auth.token,
+        user: auth.user,
+        isAuth
+    })
+
+    if (to.meta.requiredAuth && !isAuth) {
+        return { name: 'login' }
     }
 
-    // 1. bloquear rutas privadas
-    if (to.meta.requiredAuth && !token) {
-        return '/login'
+    if (to.name === 'login' && isAuth) {
+        return { name: 'dashboard' }
     }
 
-    // 2. bloquear login si ya estás logueado
-    if (to.path === '/login' && token) {
-        return '/dashboard'
-    }
-
-    // 3. control de roles
     if (to.meta.role) {
         const roles = Array.isArray(to.meta.role)
             ? to.meta.role
             : [to.meta.role]
 
-        if (!user || !roles.includes(user.role)) {
-            return '/dashboard'
+        if (!auth.user || !roles.includes(auth.user.role)) {
+            return { name: 'dashboard' }
         }
     }
 
