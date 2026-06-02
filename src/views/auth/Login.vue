@@ -3,6 +3,8 @@ import { onMounted } from 'vue';
 import { loginNest } from '../../services/auth.service';
 import { ref } from 'vue';
 import { isAxiosError } from 'axios';
+// import router from '../../router'; 
+import { useRouter } from 'vue-router';
 
 const credenciales = ref(
     {
@@ -12,6 +14,8 @@ const credenciales = ref(
 )
 
 const errors = ref<any>({});
+
+const router = useRouter();
 
 onMounted(() => {
 
@@ -23,9 +27,12 @@ async function login() {
         console.log(res)
 
         localStorage.setItem("access_token", res.data.access_token);
+        localStorage.setItem('user', JSON.stringify(res.data.user))
+
+        router.push("/dashboard")
 
     } catch (error: unknown) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             console.log(error.response?.data);
             errors.value = error.response?.data.message;
         }

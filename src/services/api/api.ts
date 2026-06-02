@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../../router';
 
 const BASE_URL = "http://localhost:3000";
 const BASE_URL_API = `${BASE_URL}/api`;
@@ -23,7 +24,7 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem("access_token");
-            // router.push('/login')
+            router.push('/login')
         }
 
         return Promise.reject(error);

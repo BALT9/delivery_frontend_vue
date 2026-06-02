@@ -22,7 +22,7 @@ const items = ref([
             {
                 label: 'Dashboard',
                 icon: 'pi pi-chart-line',
-                to: '/admin'
+                to: '/dashboard'
             },
             {
                 label: 'Análisis',
@@ -37,7 +37,7 @@ const items = ref([
             {
                 label: 'Usuarios',
                 icon: 'pi pi-users',
-                to: '/admin/users',
+                to: '/dashboard/users',
                 badge: 120
             },
             {
