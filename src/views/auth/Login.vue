@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { onMounted } from 'vue';
+import { loginNest } from '../../services/auth.service';
+import { ref } from 'vue';
+
+const credenciales = ref(
+    {
+        email: "",
+        password: ""
+    }
+)
+
+onMounted(()=>{
+
+})
+
+async function login(){
+    console.log("Login:")
+    const res = await loginNest(credenciales.value.email, credenciales.value.password);
+    console.log(res)
+}
+
+</script>
+
 <template>
     <div
         class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100/30 flex flex-col justify-between font-sans text-gray-800">
@@ -28,6 +52,10 @@
                 <div class="text-center space-y-2 mb-8 relative z-10">
                     <h2 class="text-3xl font-black text-gray-950 tracking-tight">¡Qué bueno verte!</h2>
                     <p class="text-sm text-gray-500">Ingresa tus datos para empezar a pedir</p>
+
+                    <pre>
+                        {{ JSON.stringify(credenciales, null, 2) }}
+                    </pre>
                 </div>
 
                 <!-- Formulario -->
@@ -39,7 +67,7 @@
                             Electrónico</label>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-400 text-sm">✉️</span>
-                            <input type="email" placeholder="tu@ejemplo.com"
+                            <input type="email" v-model="credenciales.email" placeholder="tu@ejemplo.com"
                                 class="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                 required />
                         </div>
@@ -54,7 +82,7 @@
                         </div>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-400 text-sm">🔒</span>
-                            <input type="password" placeholder="••••••••••••"
+                            <input type="password" v-model="credenciales.password" placeholder="••••••••••••"
                                 class="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
                                 required />
                         </div>
@@ -71,7 +99,7 @@
                     </div>
 
                     <!-- Botón de Ingreso -->
-                    <button type="submit"
+                    <button type="button" @click="login()"
                         class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-sm transition-colors shadow-lg shadow-orange-500/20 block text-center mt-2">
                         Iniciar Sesión
                     </button>

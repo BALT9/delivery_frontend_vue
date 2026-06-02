@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
+import Login from '../views/auth/Login.vue'
+import Register from '../views/auth/Register.vue'
+
 
 // import LoginView from '@/views/LoginView.vue'
 // import RegisterView from '@/views/RegisterView.vue'
