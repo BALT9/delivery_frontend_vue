@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 
+import usersService from '../services/users.service';
+
+onMounted(()=> {
+    const res = usersService.index();
+    console.log(res)
+})
 
 </script>
 
