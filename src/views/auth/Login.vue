@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { loginNest } from '../../services/auth.service';
 import { ref } from 'vue';
+import { isAxiosError } from 'axios';
 
 const credenciales = ref(
     {
@@ -10,14 +11,25 @@ const credenciales = ref(
     }
 )
 
-onMounted(()=>{
+const errors = ref<any>({});
+
+onMounted(() => {
 
 })
 
-async function login(){
-    console.log("Login:")
-    const res = await loginNest(credenciales.value.email, credenciales.value.password);
-    console.log(res)
+async function login() {
+    try {
+        const res = await loginNest(credenciales.value.email, credenciales.value.password);
+        console.log(res)
+
+        localStorage.setItem("access_token", res.data.access_token);
+
+    } catch (error: unknown) {
+        if(isAxiosError(error)){
+            console.log(error.response?.data);
+            errors.value = error.response?.data.message;
+        }
+    }
 }
 
 </script>
