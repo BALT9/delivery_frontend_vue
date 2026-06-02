@@ -3,7 +3,7 @@ import { onMounted } from 'vue';
 import { loginNest } from '../../services/auth.service';
 import { ref } from 'vue';
 import { isAxiosError } from 'axios';
-// import router from '../../router'; 
+
 import { useRouter } from 'vue-router';
 
 const credenciales = ref(
@@ -43,7 +43,7 @@ async function login() {
 
 <template>
     <div
-        class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100/30 flex flex-col justify-between font-sans text-gray-800">
+        class="md:min-h-[80vh] lg:min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100/30 flex flex-col justify-between font-sans text-gray-800">
 
         <!-- Encabezado / Regresar al Home -->
         <header class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -59,7 +59,7 @@ async function login() {
         </header>
 
         <!-- Contenedor Principal (Login) -->
-        <main class="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <main class="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
             <div
                 class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-orange-100/40 border border-gray-100 p-8 sm:p-10 relative overflow-hidden">
 
@@ -72,9 +72,9 @@ async function login() {
                     <h2 class="text-3xl font-black text-gray-950 tracking-tight">¡Qué bueno verte!</h2>
                     <p class="text-sm text-gray-500">Ingresa tus datos para empezar a pedir</p>
 
-                    <pre>
+                    <!-- <pre>
                         {{ JSON.stringify(credenciales, null, 2) }}
-                    </pre>
+                    </pre> -->
                 </div>
 
                 <!-- Formulario -->
@@ -108,14 +108,14 @@ async function login() {
                     </div>
 
                     <!-- Recordarme -->
-                    <div class="flex items-center">
+                    <!-- <div class="flex items-center">
                         <input id="remember-me" type="checkbox"
                             class="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500 accent-orange-500 cursor-pointer" />
                         <label id="remember-me"
                             class="ml-2 text-xs font-medium text-gray-500 cursor-pointer select-none">
                             Mantener sesión iniciada
                         </label>
-                    </div>
+                    </div> -->
 
                     <!-- Botón de Ingreso -->
                     <button type="button" @click="login()"
@@ -154,7 +154,7 @@ async function login() {
         </main>
 
         <!-- Footer minimalista -->
-        <footer class="py-6 text-center text-xs text-gray-400 border-t border-gray-100 bg-white">
+        <footer class="py-3 text-center text-xs text-gray-400 border-t border-gray-100 bg-white">
             © 2026 FlashEat Delivery. Todos los derechos reservados.
         </footer>
 

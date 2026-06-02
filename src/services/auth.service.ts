@@ -5,3 +5,8 @@ export async function loginNest(email: string, password: string){
     return res;
 }
 
+export async function logout(){
+    const res = await api.post(`/auth/logout`)
+    return res;
+}
+
