@@ -6,6 +6,10 @@ import { isAxiosError } from 'axios';
 
 import { useRouter } from 'vue-router';
 
+import { useAuthStore } from '../../stores/auth';
+
+const auth = useAuthStore()
+
 const credenciales = ref(
     {
         email: "",
@@ -23,18 +27,22 @@ onMounted(() => {
 
 async function login() {
     try {
-        const res = await loginNest(credenciales.value.email, credenciales.value.password);
-        console.log(res)
+        const res = await loginNest(
+            credenciales.value.email,
+            credenciales.value.password
+        )
 
-        localStorage.setItem("access_token", res.data.access_token);
-        localStorage.setItem('user', JSON.stringify(res.data.user))
+        auth.setAuth(res.data)   // 👈 CLAVE
 
-        router.push("/dashboard")
+        const role = res.data.user.role
+
+        if (role === 'ADMIN' || role === 'CUSTOMER') {
+            router.push('/dashboard')
+        }
 
     } catch (error: unknown) {
         if (isAxiosError(error)) {
-            console.log(error.response?.data);
-            errors.value = error.response?.data.message;
+            errors.value = error.response?.data.message
         }
     }
 }

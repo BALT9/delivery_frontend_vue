@@ -5,17 +5,17 @@ import { logout } from '../../../../services/auth.service';
 
 import { useRouter } from 'vue-router';
 
+import { useAuthStore } from '../../../../stores/auth';
+
+const auth = useAuthStore()
+
 const router = useRouter();
 
 async function CerrarSesion() {
-    const res = await logout();
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user");
-    alert("Cerrado...");
-
+    await logout()
+    auth.logout()
     router.push('/login')
 }
-
 
 
 const products = ref([{

@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/login',
         name: 'login',
         component: Login,
-        meta: { redirectIfAuth: true }
+        // meta: { redirectIfAuth: true }
     },
 
     {
@@ -32,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/dashboard',
         component: AdminLayout,
-        meta: { requiredAuth: true, role: 'ADMIN' },
+        meta: { requiredAuth: true },
         children: [
             {
                 path: '',
@@ -42,10 +42,30 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: 'users',
                 name: 'users',
+                meta: { role: 'ADMIN' },
                 component: User
             }
         ]
-    }
+    },
+    // {
+    //     path: '/products',
+    //     name: 'products',
+    //     component: Products,
+    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
+    // },
+    // {
+    //     path: '/cart',
+    //     name: 'cart',
+    //     component: Cart,
+    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
+    // },
+    // {
+    //     path: '/my-orders',
+    //     name: 'my-orders',
+    //     component: MyOrders,
+    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
+    // }
+
 ]
 
 const router = createRouter({
@@ -59,23 +79,29 @@ router.beforeEach((to) => {
     let user = null
     try {
         user = JSON.parse(localStorage.getItem('user') || 'null')
-    } catch (e) {
+    } catch {
         user = null
     }
 
-    // 🔒 requiere login
+    // 1. bloquear rutas privadas
     if (to.meta.requiredAuth && !token) {
         return '/login'
     }
 
-    // 🚫 role check
-    if (to.meta.role && user?.role !== to.meta.role) {
-        return '/'
+    // 2. bloquear login si ya estás logueado
+    if (to.path === '/login' && token) {
+        return '/dashboard'
     }
 
-    // 🔁 si ya está logueado no entra a login
-    if (to.meta.redirectIfAuth && token) {
-        return '/dashboard'
+    // 3. control de roles
+    if (to.meta.role) {
+        const roles = Array.isArray(to.meta.role)
+            ? to.meta.role
+            : [to.meta.role]
+
+        if (!user || !roles.includes(user.role)) {
+            return '/dashboard'
+        }
     }
 
     return true

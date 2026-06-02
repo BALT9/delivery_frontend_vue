@@ -7,47 +7,81 @@ import Badge from 'primevue/badge';
 import Divider from 'primevue/divider';
 import Button from 'primevue/button';
 
+import { computed } from 'vue';
+import { useAuthStore } from '../stores/auth';
+
 const route = useRoute();
 const isSidebarOpen = ref(false);
+
+const auth = useAuthStore()
 
 const toggleSidebar = () => {
     isSidebarOpen.value = !isSidebarOpen.value;
 };
 
 // Estructura de navegación profesional
-const items = ref([
-    {
-        label: 'Principal',
-        items: [
+const items = computed(() => {
+    const role = auth.user?.role
+
+    if (role === 'ADMIN') {
+        return [
             {
-                label: 'Dashboard',
-                icon: 'pi pi-chart-line',
-                to: '/dashboard'
+                label: 'Principal',
+                items: [
+                    {
+                        label: 'Dashboard',
+                        icon: 'pi pi-chart-line',
+                        to: '/dashboard'
+                    }
+                ]
             },
             {
-                label: 'Análisis',
-                icon: 'pi pi-compass',
-                to: '/admin/analytics'
-            }
-        ]
-    },
-    {
-        label: 'Gestión',
-        items: [
-            {
-                label: 'Usuarios',
-                icon: 'pi pi-users',
-                to: '/dashboard/users',
-                badge: 120
-            },
-            {
-                label: 'Configuración',
-                icon: 'pi pi-cog',
-                to: '/admin/settings'
+                label: 'Gestión',
+                items: [
+                    {
+                        label: 'Productos',
+                        icon: 'pi pi-box',
+                        to: '/dashboard/products'
+                    },
+                    {
+                        label: 'Pedidos',
+                        icon: 'pi pi-shopping-bag',
+                        to: '/dashboard/orders'
+                    }
+                ]
             }
         ]
     }
-]);
+
+    if (role === 'CUSTOMER') {
+        return [
+            {
+                label: 'Tienda',
+                items: [
+                    {
+                        label: 'Productos',
+                        icon: 'pi pi-shopping-cart',
+                        to: '/products'
+                    },
+                    {
+                        label: 'Carrito',
+                        icon: 'pi pi-cart-plus',
+                        to: '/cart'
+                    },
+                    {
+                        label: 'Mis pedidos',
+                        icon: 'pi pi-list',
+                        to: '/my-orders'
+                    }
+                ]
+            }
+        ]
+    }
+
+    return []
+})
+
+
 </script>
 
 <template>
@@ -167,8 +201,13 @@ const items = ref([
                     <!-- Bloque de Usuario -->
                     <div class="flex items-center gap-2 sm:gap-3 pl-1 sm:pl-2">
                         <div class="text-right hidden md:block">
-                            <p class="text-xs font-bold text-zinc-900 leading-none">Carlos Rodriguez</p>
-                            <p class="text-[10px] text-zinc-500 mt-1 uppercase tracking-tighter">Admin Root</p>
+                            <p class="text-xs font-bold text-zinc-900 leading-none">
+                                {{ auth.user?.name }}
+                            </p>
+
+                            <p class="text-[10px] text-zinc-500 mt-1 uppercase tracking-tighter">
+                                {{ auth.user?.role }}
+                            </p>
                         </div>
                         <Avatar label="CR" class="!bg-zinc-900 !text-white !text-xs !w-8 !h-8 sm:!w-9 sm:!h-9"
                             shape="circle" size="normal" />

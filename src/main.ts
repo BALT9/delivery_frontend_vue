@@ -1,13 +1,30 @@
 import { createApp } from 'vue'
 
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
-import { definePreset } from '@primeuix/themes';
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
+import { definePreset } from '@primeuix/themes'
+
+import { createPinia } from 'pinia'
 
 import './style.css'
 import App from './App.vue'
 import router from './router/index.ts'
+import { useAuthStore } from './stores/auth.ts'
 
+const app = createApp(App)
+
+// 1. Pinia primero
+const pinia = createPinia()
+app.use(pinia)
+
+// inicializar auth DESPUÉS de usar pinia
+const auth = useAuthStore(pinia)
+auth.init()
+
+// 2. Router
+app.use(router)
+
+// 3. PrimeVue
 const OrangePreset = definePreset(Aura, {
     semantic: {
         primary: {
@@ -24,9 +41,7 @@ const OrangePreset = definePreset(Aura, {
             950: '{orange.950}'
         }
     }
-});
-
-const app = createApp(App);
+})
 
 app.use(PrimeVue, {
     theme: {
@@ -35,7 +50,6 @@ app.use(PrimeVue, {
             darkModeSelector: false
         }
     }
-});
+})
 
-app.use(router);
-app.mount('#app');
+app.mount('#app')
