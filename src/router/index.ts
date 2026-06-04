@@ -85,13 +85,13 @@ router.beforeEach((to) => {
 
     const isAuth = auth.token !== null && auth.token !== '' && auth.token !== 'null'
 
-    console.log({
-        to: to.name,
-        path: to.path,
-        token: auth.token,
-        user: auth.user,
-        isAuth
-    })
+    // console.log({
+    //     to: to.name,
+    //     path: to.path,
+    //     token: auth.token,
+    //     user: auth.user,
+    //     isAuth
+    // })
 
     if (to.meta.requiredAuth && !isAuth) {
         return { name: 'login' }

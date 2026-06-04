@@ -1,15 +1,42 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { UserInterface } from '../../interface/User.interface';
+import { registerNest } from '../../services/auth.service';
+import { useAuthStore } from '../../stores/auth';
 
-const formData = ref({
+import { useRouter } from 'vue-router';
+import { isAxiosError } from 'axios';
+
+const router = useRouter();
+
+const auth = useAuthStore()
+
+const formData = ref<UserInterface>({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'CUSTOMER'
 })
 
-const handleRegister = () => {
-    // Aquí manejas el envío de datos a tu API
-    console.log('Datos enviados:', formData.value)
+const errors = ref<any>({});
+
+async function register() {
+    try {
+        const res = await registerNest(formData.value);
+        console.log(res.data);
+
+        auth.setAuth(res.data)   // 👈 CLAVE
+
+        const role = res.data.user.role
+
+        if (role === 'ADMIN' || role === 'CUSTOMER') {
+            router.push('/dashboard')
+        }
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
+            errors.value = error.response?.data.message
+        }
+    }
 }
 </script>
 
@@ -46,7 +73,7 @@ const handleRegister = () => {
                 </div>
 
                 <!-- Formulario -->
-                <form @submit.prevent="handleRegister" class="space-y-5 relative z-10">
+                <form class="space-y-5 relative z-10">
 
                     <!-- Input Nombre (name) -->
                     <div class="space-y-1.5">
@@ -83,13 +110,17 @@ const handleRegister = () => {
                         </div>
                     </div>
 
+                    <pre>{{ JSON.stringify(formData, null, 2) }}</pre>
+
                     <!-- Términos y Condiciones sutiles -->
                     <p class="text-[11px] text-gray-400 text-center px-4 leading-relaxed">
                         Al registrarte, aceptas nuestros Términos de Servicio y Políticas de Privacidad.
                     </p>
 
+                    <pre>{{ JSON.stringify(errors) }}</pre>
+
                     <!-- Botón de Registro -->
-                    <button type="submit"
+                    <button type="button" @click="register()"
                         class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-sm transition-colors shadow-lg shadow-orange-500/20 block text-center mt-2">
                         Crear Cuenta
                     </button>
