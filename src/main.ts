@@ -7,6 +7,8 @@ import { definePreset } from '@primeuix/themes'
 import { createPinia } from 'pinia'
 
 import './style.css'
+import 'primeicons/primeicons.css'
+
 import App from './App.vue'
 import router from './router/index.ts'
 import { useAuthStore } from './stores/auth.ts'
