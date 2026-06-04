@@ -139,7 +139,7 @@ async function register() {
                 <!-- Ya tengo cuenta -->
                 <p class="text-center text-xs text-gray-500">
                     ¿Ya tienes una cuenta?
-                    <a href="#" class="text-orange-500 font-bold hover:underline">Inicia Sesión</a>
+                    <RouterLink to="/login" class="text-orange-500 font-bold hover:underline">Inicia Sesión</RouterLink>
                 </p>
 
             </div>

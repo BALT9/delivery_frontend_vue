@@ -155,7 +155,7 @@ async function login() {
                 <!-- Registro -->
                 <p class="text-center text-xs text-gray-500 mt-8">
                     ¿No tienes una cuenta?
-                    <a href="#" class="text-orange-500 font-bold hover:underline">Regístrate gratis</a>
+                    <RouterLink to="/register" class="text-orange-500 font-bold hover:underline">Regístrate gratis</RouterLink>
                 </p>
 
             </div>
