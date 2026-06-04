@@ -61,22 +61,27 @@ const items = computed(() => {
     if (role === 'CUSTOMER') {
         return [
             {
+                label: 'Principal',
+                items: [
+                    {
+                        label: 'Dashboard',
+                        icon: 'pi pi-chart-line',
+                        to: '/dashboard'
+                    }
+                ]
+            },
+            {
                 label: 'Tienda',
                 items: [
                     {
                         label: 'Productos',
                         icon: 'pi pi-shopping-cart',
-                        to: '/products'
-                    },
-                    {
-                        label: 'Carrito',
-                        icon: 'pi pi-cart-plus',
-                        to: '/cart'
+                        to: '/dashboard/products'
                     },
                     {
                         label: 'Mis pedidos',
                         icon: 'pi pi-list',
-                        to: '/my-orders'
+                        to: '/dashboard/my-orders'
                     }
                 ]
             }

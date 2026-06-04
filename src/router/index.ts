@@ -9,8 +9,9 @@ import { useAuthStore } from '../stores/auth.ts'
 import AdminLayout from '../layout/AdminLayout.vue'
 import AdminHome from '../views/admin/Dashboard/AdminHome/AdminHome.vue'
 import User from '../views/admin/Dashboard/Users/User.vue'
-import Producto from '../views/admin/Dashboard/Productos/Producto.vue'
 import Pedido from '../views/admin/Dashboard/Pedidos/Pedido.vue'
+import Producto from '../views/admin/Dashboard/Productos/Producto.vue'
+import MisPedidos from '../views/admin/Dashboard/misPedidos/MisPedidos.vue'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -22,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/login',
         name: 'login',
-        component: Login,
+        component: Login
     },
 
     {
@@ -31,7 +32,6 @@ const routes: Array<RouteRecordRaw> = [
         component: Register
     },
 
-    // ADMIN (con layout)
     {
         path: '/dashboard',
         component: AdminLayout,
@@ -42,45 +42,37 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'dashboard',
                 component: AdminHome
             },
+
+            // ADMIN
             {
                 path: 'products',
                 name: 'products',
-                meta: { role: 'ADMIN' },
-                component: Producto
+                component: Producto,
+                meta: { role: ['ADMIN', 'CUSTOMER'] }
             },
             {
                 path: 'orders',
                 name: 'orders',
-                meta: { role: 'ADMIN' },
-                component: Pedido
+                component: Pedido,
+                meta: { role: 'ADMIN' }
             },
+
             {
                 path: 'users',
                 name: 'users',
-                meta: { role: 'ADMIN' },
-                component: User
+                component: User,
+                meta: { role: 'ADMIN' }
+            },
+
+            // CUSTOMER
+            {
+                path: 'my-orders',
+                name: 'my-orders',
+                component: MisPedidos,
+                meta: { role: 'CUSTOMER' }
             }
         ]
-    },
-    // {
-    //     path: '/products',
-    //     name: 'products',
-    //     component: Products,
-    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
-    // },
-    // {
-    //     path: '/cart',
-    //     name: 'cart',
-    //     component: Cart,
-    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
-    // },
-    // {
-    //     path: '/my-orders',
-    //     name: 'my-orders',
-    //     component: MyOrders,
-    //     meta: { requiredAuth: true, role: 'CUSTOMER' }
-    // }
-
+    }
 ]
 
 const router = createRouter({
