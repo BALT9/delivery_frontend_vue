@@ -1,5 +1,5 @@
 import axios from 'axios'
-import router from '../../router';
+// import router from '../../router';
 
 const BASE_URL = "http://localhost:3000";
 const BASE_URL_API = `${BASE_URL}/api`;

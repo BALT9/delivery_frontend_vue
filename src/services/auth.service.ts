@@ -10,3 +10,8 @@ export async function logout(){
     return res;
 }
 
+export async function profile(){
+    const res = await api.get(`/auth/profile`)
+    return res;
+}
+

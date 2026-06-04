@@ -47,7 +47,12 @@ const items = computed(() => {
                         label: 'Pedidos',
                         icon: 'pi pi-shopping-bag',
                         to: '/dashboard/orders'
-                    }
+                    },
+                    {
+                        label: 'Usuarios',
+                        icon: 'pi pi-box',
+                        to: '/dashboard/users'
+                    },
                 ]
             }
         ]
