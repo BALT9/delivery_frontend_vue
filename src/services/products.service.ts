@@ -2,8 +2,14 @@ import type { ProductInterface } from '../interface/Product.interface'
 import api from './api/api'
 
 export default {
-    async index() {
-        return await api.get(`/products`)
+    async index(page = 1, limit = 10, search = '') {
+        return await api.get('/products', {
+            params: {
+                page,
+                limit,
+                search
+            }
+        })
     },
 
     async store(data: ProductInterface) {

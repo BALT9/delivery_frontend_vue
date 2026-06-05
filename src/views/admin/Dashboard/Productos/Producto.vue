@@ -8,21 +8,44 @@ import Tag from 'primevue/tag'
 import type { ProductInterface } from '../../../../interface/Product.interface'
 import productsService from '../../../../services/products.service'
 import { useAuthStore } from '../../../../stores/auth'
+import { Checkbox, Dialog, IconField, InputIcon, InputNumber, InputText, Paginator } from 'primevue'
 
 const auth = useAuthStore()
 
+const visible = ref<boolean>(false);
+
 const productos = ref<ProductInterface[]>([])
 const loading = ref(false)
+
+const productDataBlank = {
+    name: '',
+    description: '',
+    price: 0,
+    image: '',
+    stock: 0,
+    is_available: false
+}
+
+const product = ref<ProductInterface>({
+    ...productDataBlank
+});
+
+// paginacion 
+const page = ref(1)
+const total = ref(0)
+const rows = ref(10)
+const first = ref(0)
+const search = ref('')
 
 async function listarProductos() {
     try {
         loading.value = true
 
-        const res = await productsService.index()
-
-        console.log(res.data)
+        const res = await productsService.index(page.value, rows.value, search.value)
 
         productos.value = res.data.data
+        page.value = res.data.page
+        total.value = res.data.total
     } catch (error) {
         console.error('Error al listar productos', error)
     } finally {
@@ -31,7 +54,8 @@ async function listarProductos() {
 }
 
 function editarProducto(producto: ProductInterface) {
-    console.log('Editar', producto)
+    visible.value = true;
+    product.value = producto;
 }
 
 function eliminarProducto(producto: ProductInterface) {
@@ -42,9 +66,60 @@ function agregarAlCarrito(producto: ProductInterface) {
     console.log('Agregar al carrito', producto)
 }
 
+function onPageChange(event: any) {
+    page.value = event.page + 1   // PrimeVue usa base 0
+    rows.value = event.rows
+    first.value = event.first
+
+    listarProductos()
+}
+
+async function crearProducto() {
+    try {
+        if (product.value.id) {
+            const payload: any = {
+                name: product.value.name,
+                description: product.value.description,
+                price: Number(product.value.price),
+                image: product.value.image,
+                stock: product.value.stock,
+                is_available: product.value.is_available
+            }
+
+            const res = await productsService.update(product.value.id, payload);
+            console.log(res);
+            listarProductos();
+            visible.value = false;
+            product.value = { ...productDataBlank };
+
+        } else {
+            const res = await productsService.store(product.value);
+            console.log(res);
+            listarProductos();
+            visible.value = false;
+            product.value = { ...productDataBlank };
+        }
+    } catch (error) {
+
+    }
+}
+
 onMounted(() => {
     listarProductos()
 })
+
+function onSearchEnter() {
+    page.value = 1
+    first.value = 0
+    listarProductos()
+}
+
+// function clearFilter() {
+//     search.value = ''
+//     page.value = 1
+//     listarProductos()
+// }
+
 </script>
 
 <template>
@@ -55,8 +130,60 @@ onMounted(() => {
                 Productos
             </h1>
 
-            <Button v-if="auth.isAdmin" label="Nuevo Producto" icon="pi pi-plus" />
+            <Button v-if="auth.isAdmin" @click="visible = true" label="Nuevo Producto" icon="pi pi-plus" />
         </div>
+        <div class="flex justify-between items-center mb-4">
+            <!-- <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter" /> -->
+
+            <span class="p-input-icon-left">
+                <!-- <i class="pi pi-search" /> -->
+                <InputText v-model="search" placeholder="Buscar productos..." @keydown.enter="onSearchEnter" />
+            </span>
+        </div>
+
+        <Dialog v-model:visible="visible" modal header="Producto" :style="{ width: '30rem' }">
+            <span class="text-surface-500 dark:text-surface-400 block mb-8">
+                Ingresa la información del producto.
+            </span>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="name" class="font-semibold w-24">Nombre</label>
+                <InputText id="name" v-model="product.name" class="flex-auto" autocomplete="off" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="description" class="font-semibold w-24">Descripción</label>
+                <InputText id="description" v-model="product.description" class="flex-auto" autocomplete="off" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="price" class="font-semibold w-24">Precio</label>
+                <InputNumber id="price" v-model="product.price" mode="currency" currency="USD" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="stock" class="font-semibold w-24">Stock</label>
+                <InputNumber id="stock" v-model="product.stock" class="flex-auto" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="image" class="font-semibold w-24">Imagen</label>
+                <InputText id="image" v-model="product.image" class="flex-auto" placeholder="URL de la imagen" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-8">
+                <label for="available" class="font-semibold w-24">Disponible</label>
+                <Checkbox id="available" v-model="product.is_available" binary />
+            </div>
+
+            {{ product }}
+
+            <div class="flex justify-end gap-2">
+                <Button type="button" label="Cancelar" severity="secondary" @click="visible = false" />
+
+                <Button type="button" label="Crear" @click="crearProducto()" />
+            </div>
+        </Dialog>
 
         <div v-if="productos.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card v-for="producto in productos" :key="producto.id">
@@ -114,11 +241,16 @@ onMounted(() => {
                     </div>
                 </template>
             </Card>
+
+
         </div>
 
         <div v-else-if="!loading" class="text-center py-10 text-gray-500">
             No hay productos disponibles.
         </div>
+
+        <Paginator v-model:first="first" :rows="rows" :totalRecords="total" :rowsPerPageOptions="[2, 10, 20, 30]"
+            @page="onPageChange"></Paginator>
 
     </div>
 </template>
