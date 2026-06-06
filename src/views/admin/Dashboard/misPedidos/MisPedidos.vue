@@ -42,6 +42,8 @@ async function crearPedido() {
             summary: 'Pedido creado',
             life: 3000
         })
+        
+        listarMisPedidos();
 
     } catch (error) {
         console.error(error)
