@@ -12,6 +12,7 @@ import 'primeicons/primeicons.css'
 import App from './App.vue'
 import router from './router/index.ts'
 import { useAuthStore } from './stores/auth.ts'
+import { ToastService } from 'primevue'
 
 const app = createApp(App)
 
@@ -53,5 +54,6 @@ app.use(PrimeVue, {
         }
     }
 })
+app.use(ToastService)
 
 app.mount('#app')
