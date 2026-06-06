@@ -172,7 +172,8 @@ async function crearPedido() {
             }))
         }
 
-        await ordersService.store(payload);
+        const res = await ordersService.store(payload);
+        console.log(res)
 
         toast.add({
             severity: 'success',
@@ -224,7 +225,11 @@ onMounted(() => {
 
             <Column header="Productos">
                 <template #body="{ data }">
-                    {{ data.items.length }}
+                    <div class="flex flex-col text-sm gap-1">
+                        <div v-for="item in data.items" :key="item.id">
+                            • {{ item.product.name }} (x{{ item.quantity }})
+                        </div>
+                    </div>
                 </template>
             </Column>
 

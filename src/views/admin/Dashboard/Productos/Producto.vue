@@ -9,6 +9,9 @@ import type { ProductInterface } from '../../../../interface/Product.interface'
 import productsService from '../../../../services/products.service'
 import { useAuthStore } from '../../../../stores/auth'
 import { Checkbox, Dialog, IconField, InputIcon, InputNumber, InputText, Paginator } from 'primevue'
+import { useCartStore } from '../../../../stores/cart'
+
+const cart = useCartStore()
 
 const auth = useAuthStore()
 
@@ -63,7 +66,8 @@ function eliminarProducto(producto: ProductInterface) {
 }
 
 function agregarAlCarrito(producto: ProductInterface) {
-    console.log('Agregar al carrito', producto)
+    console.log('Agregar al carrito', producto);
+    cart.add(producto);
 }
 
 function onPageChange(event: any) {
